@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Fraud Detection | AI-Powered Insurance</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00f0ff;
+            --secondary: #7b2dff;
+            --danger: #ff3860;
+            --warning: #ffcc00;
+            --success: #00ff9d;
+            --dark: #0a0e17;
+            --darker: #050a14;
+            --light: rgba(255,255,255,0.9);
+            --glass: rgba(15, 22, 46, 0.5);
+            --glass-border: rgba(255,255,255,0.1);
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--dark);
+            color: var(--light);
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(123, 45, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(0, 240, 255, 0.15) 0%, transparent 50%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+        }
+        
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 2.5rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 30px;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        
+        h1::before {
+            content: '🚗';
+            margin-right: 15px;
+            filter: hue-rotate(180deg);
+        }
+        
+        form {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .input-group {
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--primary);
+            text-align: left;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: rgba(10, 14, 23, 0.7);
+            color: var(--light);
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+        }
+        
+        input::placeholder {
+            color: rgba(255,255,255,0.4);
+        }
+        
+        .submit-btn {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        button {
+            padding: 15px 40px;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: var(--dark);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 500;
+            font-size: 16px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        button:hover::before {
+            opacity: 1;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 240, 255, 0.3);
+        }
+        
+        .result-container {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            display: none;
+        }
+        
+        .result-container.visible {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 500;
+            margin-top: 0;
+            color: var(--light);
+            text-align: center;
+        }
+        
+        .fraud {
+            color: var(--danger);
+            text-shadow: 0 0 10px rgba(255, 56, 96, 0.5);
+        }
+        
+        .legit {
+            color: var(--success);
+            text-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
+        }
+        
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .floating-element {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.3;
+        }
+        
+        .floating-1 {
+            width: 200px;
+            height: 200px;
+            background: var(--primary);
+            top: -50px;
+            right: -50px;
+            animation: float 15s infinite ease-in-out;
+        }
+        
+        .floating-2 {
+            width: 300px;
+            height: 300px;
+            background: var(--secondary);
+            bottom: -100px;
+            left: -100px;
+            animation: float 20s infinite ease-in-out reverse;
+        }
+        
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(50px, 50px); }
+            100% { transform: translate(0, 0); }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            form {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-elements">
+        <div class="floating-element floating-1"></div>
+        <div class="floating-element floating-2"></div>
+    </div>
+    
+    <div class="container">
+        <h1>QUANTUM FRAUD DETECTION</h1>
+        
+        <form method="POST" action="/predict">
+            {% for feature in features %}
+                <div class="input-group">
+                    <label for="{{ feature }}">{{ feature }}</label>
+                    {% if mappings and feature in mappings %}
+                        <select id="{{ feature }}" name="{{ feature }}" required>
+                            <option value="" disabled selected>Select {{ feature }}</option>
+                            {% for code, value in mappings[feature].items() %}
+                                <option value="{{ value }}">{{ value }}</option>
+                            {% endfor %}
+                        </select>
+                    {% else %}
+                        <input type="text" id="{{ feature }}" name="{{ feature }}" placeholder="Enter {{ feature }}" required>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <div class="submit-btn">
+                <button type="submit">ANALYZE CLAIM</button>
+            </div>
+        </form>
+        <div class="result-container{% if prediction_text %} visible{% endif %}" id="resultContainer">
+            {% if prediction_text %}
+                <h2>ANALYSIS RESULT: <span class="{% if 'Fraud' in prediction_text or 'FRAUD' in prediction_text %}fraud{% else %}legit{% endif %}">{{ prediction_text }}</span></h2>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Animation for form submission (would be enhanced with actual form submission in production)
+        const form = document.querySelector('form');
+        const resultContainer = document.getElementById('resultContainer');
+        
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Show loading state
+                const submitBtn = form.querySelector('button');
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" stroke="#0a0e17" style="margin-right: 8px;"><g fill="none" fill-rule="evenodd"><g transform="translate(1 1)" stroke-width="2"><circle stroke-opacity=".5" cx="18" cy="18" r="18"/><path d="M36 18c0-9.94-8.06-18-18-18"><animateTransform attributeName="transform" type="rotate" from="0 18 18" to="360 18 18" dur="1s" repeatCount="indefinite"/></path></g></g></svg> ANALYZING...';
+                
+                // Simulate API call
+                setTimeout(() => {
+                    // In a real app, this would be replaced with actual form submission
+                    resultContainer.innerHTML = '<h2>ANALYSIS RESULT: <span class="fraud">POTENTIAL FRAUD DETECTED</span></h2>';
+                    resultContainer.classList.add('visible');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'ANALYZE CLAIM';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
